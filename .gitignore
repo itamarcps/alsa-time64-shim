@@ -1,2 +1,4 @@
 *.so
 *.o
+tests/test-shim
+tests/test-baseline
