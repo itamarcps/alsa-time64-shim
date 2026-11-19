@@ -1,0 +1,36 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  armhf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the cross compiler and QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-linux-gnueabihf qemu-user
+
+      - name: Build
+        run: make CC=arm-linux-gnueabihf-gcc
+
+      - name: Test
+        run: make check CC=arm-linux-gnueabihf-gcc RUNNER="qemu-arm -L /usr/arm-linux-gnueabihf"
+
+  i386:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install 32-bit libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib
+
+      - name: Build
+        run: make CC="gcc -m32"
+
+      - name: Test
+        run: make check CC="gcc -m32"
